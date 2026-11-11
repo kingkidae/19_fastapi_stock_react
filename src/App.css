@@ -1,0 +1,24 @@
+main { padding: 0 16px 48px; text-align: left; }
+.msg { padding: 48px; }
+h1 { margin: 24px 0 8px; }
+h1 small { font-size: 18px; color: var(--text); }
+h2 { margin-top: 32px; font-size: 18px; }
+.price { font-size: 28px; color: var(--text-h); }
+.muted { font-size: 14px; }
+.up { color: #e5383b; }   /* 한국 관례: 상승 빨강 */
+.down { color: #1e6fd9; } /* 하락 파랑 */
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 24px; }
+.cards div { border: 1px solid var(--border); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; }
+.cards span { font-size: 13px; }
+.cards b { font-size: 20px; color: var(--text-h); }
+
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; }
+.legend .range { margin-left: auto; }
+svg { border: 1px solid var(--border); border-radius: 8px; display: block; }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--border); text-align: right; }
+th { color: var(--text-h); position: sticky; top: 0; background: var(--bg); }
+td:first-child, th:first-child { text-align: left; }

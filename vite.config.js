@@ -5,5 +5,5 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   // FastAPI sends no CORS headers, so proxy through the dev server
-  server: { proxy: { "/samsung": "http://16.179.21.221" } },
+  server: { proxy: { "/samsung": "http://16.179.21.221/samsung" } },
 });

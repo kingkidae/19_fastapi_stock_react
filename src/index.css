@@ -1,27 +1,28 @@
 :root {
-  --bg: #eceff3;
-  --surface: #ffffff;
-  --ink: #16202f;
-  --muted: #5a6475;
-  --faint: #8a93a3;
-  --line: #d3d9e1;
-  --grid: #edf0f4;
+  --bg: #0f1622;
+  --surface: #152031;
+  --raised: #1c293d;
+  --ink: #e9eef6;
+  --muted: #95a3b8;
+  --faint: #66758c;
+  --line: #24324a;
+  --grid: #1b2738;
 
   /* 한국 관례: 상승 빨강, 하락 파랑 */
-  --up: #d8362b;
-  --up-soft: #f7d9d6;
-  --down: #1f5fc8;
-  --down-soft: #d6e3f7;
+  --up: #f3555a;
+  --up-soft: rgba(243, 85, 90, 0.42);
+  --down: #4b8dff;
+  --down-soft: rgba(75, 141, 255, 0.42);
 
-  --ma5: #c98a0c;
-  --ma20: #12917f;
-  --ma60: #7650bd;
-  --ma120: #8791a2;
-  --bb: #7d8da4;
+  --ma5: #f0b03c;
+  --ma20: #34c6ad;
+  --ma60: #a689fb;
+  --ma120: #8b98ad;
+  --bb: #8b98ad;
 
   --font: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 
-  color-scheme: light;
+  color-scheme: dark;
   font: 400 16px/1.5 var(--font);
   font-variant-numeric: tabular-nums;
   color: var(--ink);
@@ -33,3 +34,4 @@ body { margin: 0; }
 h1, h2, p { margin: 0; }
 button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+::selection { background: var(--down); color: #fff; }

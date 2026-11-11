@@ -91,21 +91,29 @@ export function PriceChart({ rows, show, hover, onHover }) {
                   const cls = r.Close >= r.Open ? 'up' : 'down';
                   const top = y(Math.max(r.Open, r.Close));
                   return (
-                    <g key={r.Date} className={`candle ${cls}`}>
+                    <g key={r.Date} className={`candle ${cls}`} style={{ "--d": `${Math.min(i * 6, 900)}ms` }}>
                       <line x1={x(i)} x2={x(i)} y1={y(r.High)} y2={y(r.Low)} />
                       <rect x={x(i) - bw / 2} y={top} width={bw} height={Math.max(1, y(Math.min(r.Open, r.Close)) - top)} />
                     </g>
                   );
                 })
-              : <path className="close-line" d={linePath(rows, 'Close', x, y)} />}
+              : <path className="close-line draw" pathLength={1} d={linePath(rows, 'Close', x, y)} />}
             {MA_KEYS.filter((k) => show[k]).map((k) => (
-              <path key={k} className="ma" style={{ stroke: `var(--${k.toLowerCase()})` }} d={linePath(rows, k, x, y)} />
+              <path key={k} className="ma draw" pathLength={1} style={{ stroke: `var(--${k.toLowerCase()})` }} d={linePath(rows, k, x, y)} />
             ))}
             <line className={`last-line ${lastUp ? 'up' : 'down'}`} x1={0} x2={plotW} y1={y(last.Close)} y2={y(last.Close)} />
             <g className={`last-tag ${lastUp ? 'up' : 'down'}`}>
               <rect x={plotW + 2} y={y(last.Close) - 11} width={AXIS - 4} height={22} rx={3} />
               <text x={plotW + 8} y={y(last.Close)} dy="0.35em">{won(last.Close)}</text>
             </g>
+            {hover != null && (
+              <g className="hover-mark">
+                <line x1={0} x2={plotW} y1={y(rows[hover].Close)} y2={y(rows[hover].Close)} />
+                <circle cx={x(hover)} cy={y(rows[hover].Close)} r={4} />
+                <rect x={plotW + 2} y={y(rows[hover].Close) - 11} width={AXIS - 4} height={22} rx={3} />
+                <text x={plotW + 8} y={y(rows[hover].Close)} dy="0.35em">{won(rows[hover].Close)}</text>
+              </g>
+            )}
           </>
         );
       }}
@@ -119,7 +127,7 @@ export function VolumeChart({ rows, hover, onHover }) {
     <Plot n={rows.length} height={72} min={0} max={max} ticks={niceTicks(0, max, 2).slice(1)} fmt={volUnit} hover={hover} onHover={onHover}>
       {({ x, y, step }) =>
         rows.map((r, i) => (
-          <rect key={r.Date} className={`vol ${r.Close >= r.Open ? 'up' : 'down'}`} x={x(i) - Math.max(1, step * 0.62) / 2} y={y(r.Volume)} width={Math.max(1, step * 0.62)} height={y(0) - y(r.Volume)} />
+          <rect key={r.Date} className={`vol grow ${r.Close >= r.Open ? "up" : "down"}`} style={{ "--d": `${Math.min(i * 6, 900)}ms` }} x={x(i) - Math.max(1, step * 0.62) / 2} y={y(r.Volume)} width={Math.max(1, step * 0.62)} height={y(0) - y(r.Volume)} />
         ))
       }
     </Plot>
@@ -132,7 +140,7 @@ export function RsiChart({ rows, hover, onHover }) {
       {({ x, y, plotW }) => (
         <>
           <rect className="rsi-zone" x={0} y={y(70)} width={plotW} height={y(30) - y(70)} />
-          <path className="ink-line" d={linePath(rows, 'RSI14', x, y)} />
+          <path className="ink-line draw" pathLength={1} d={linePath(rows, 'RSI14', x, y)} />
         </>
       )}
     </Plot>
@@ -150,8 +158,8 @@ export function MacdChart({ rows, hover, onHover }) {
           {rows.map((r, i) => (
             <rect key={r.Date} className={`vol ${r.Hist >= 0 ? 'up' : 'down'}`} x={x(i) - Math.max(1, step * 0.62) / 2} y={Math.min(y(0), y(r.Hist))} width={Math.max(1, step * 0.62)} height={Math.abs(y(r.Hist) - y(0))} />
           ))}
-          <path className="ink-line" d={linePath(rows, 'MACD', x, y)} />
-          <path className="ma" style={{ stroke: 'var(--ma5)' }} d={linePath(rows, 'Signal', x, y)} />
+          <path className="ink-line draw" pathLength={1} d={linePath(rows, 'MACD', x, y)} />
+          <path className="ma draw" pathLength={1} style={{ stroke: "var(--ma5)" }} d={linePath(rows, 'Signal', x, y)} />
         </>
       )}
     </Plot>

@@ -21,6 +21,7 @@
   --bb: #8b98ad;
 
   --font: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   color-scheme: dark;
   font: 400 16px/1.5 var(--font);
@@ -30,6 +31,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html, body { overflow-x: clip; }
 body { margin: 0; }
 h1, h2, p { margin: 0; }
 button { font: inherit; color: inherit; cursor: pointer; }

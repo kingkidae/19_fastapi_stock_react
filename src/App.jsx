@@ -1,7 +1,28 @@
 import { useEffect, useState } from 'react';
 import { DateAxis, MacdChart, PriceChart, RsiChart, VolumeChart } from './charts.jsx';
 import { MA_KEYS, won } from './format.js';
+import Stage from './Stage.jsx';
 import './App.css';
+
+// 숫자마다 0~9 띠를 굴려 제자리에 멈추게 한다(오도미터)
+function Odometer({ value }) {
+  const text = won(value);
+  return (
+    <span className="odo" role="text" aria-label={text}>
+      {text.split('').map((c, i) =>
+        /\d/.test(c) ? (
+          <span key={i} className="odo-col" aria-hidden="true">
+            <span className="odo-strip" style={{ '--to': `-${c}em`, '--d': `${200 + i * 70}ms` }}>
+              {'0123456789'.split('').map((d) => <span key={d}>{d}</span>)}
+            </span>
+          </span>
+        ) : (
+          <span key={i} aria-hidden="true">{c}</span>
+        ),
+      )}
+    </span>
+  );
+}
 
 const PERIODS = [['1개월', 21], ['3개월', 63], ['6개월', 126], ['1년', 250], ['전체', Infinity]];
 const LINES = [['MA5', '5일선'], ['MA20', '20일선'], ['MA60', '60일선'], ['MA120', '120일선'], ['BB', '볼린저밴드']];
@@ -80,25 +101,26 @@ function App() {
 
   return (
     <>
+      <Stage data={data} />
       <main>
         <header className="hero">
           <div className="quote">
-            <h1>{res.name}<span className="code">{res.code} 코스피</span></h1>
-            <p className="price">{won(last.Close)}<span className="unit">원</span></p>
-            <p className={`delta ${tone(summary.change)}`}>
+            <h1 className="rise" style={{ '--i': 0 }}>{res.name}<span className="code">{res.code} 코스피</span></h1>
+            <p className="price rise" style={{ '--i': 1 }}><Odometer value={last.Close} /><span className="unit">원</span></p>
+            <p className={`delta rise ${tone(summary.change)}`} style={{ '--i': 2 }}>
               {summary.change > 0 ? '▲' : summary.change < 0 ? '▼' : ''} {won(Math.abs(summary.change))}원
               <span>{pct(last.Change)}</span>
             </p>
-            <dl className="ohlc">
+            <dl className="ohlc rise" style={{ '--i': 3 }}>
               <div><dt>시가</dt><dd>{won(last.Open)}</dd></div>
               <div><dt>고가</dt><dd className="up">{won(last.High)}</dd></div>
               <div><dt>저가</dt><dd className="down">{won(last.Low)}</dd></div>
               <div><dt>거래량</dt><dd>{won(last.Volume)}</dd></div>
             </dl>
-            <p className="asof">{fmtDate(res.updated)} 기준</p>
+            <p className="asof rise" style={{ '--i': 4 }}><i className="live" aria-hidden="true" />{fmtDate(res.updated)} 기준</p>
           </div>
 
-          <section className="signals" aria-labelledby="signals-title">
+          <section className="signals rise" style={{ '--i': 3 }} aria-labelledby="signals-title">
             <h2 id="signals-title">지금의 신호</h2>
             <ul>
               {signals(data).map((s) => (
@@ -112,9 +134,10 @@ function App() {
           </section>
         </header>
 
-        <section className="board" aria-label="차트">
+        <section className="board rise" style={{ '--i': 5 }} aria-label="차트">
           <div className="toolbar">
             <div className="seg" role="group" aria-label="기간">
+              <span className="seg-pill" style={{ '--idx': PERIODS.findIndex(([, n]) => n === period) }} aria-hidden="true" />
               {PERIODS.map(([label, n]) => (
                 <button key={label} aria-pressed={period === n} onClick={() => { setPeriod(n); setHover(null); }}>{label}</button>
               ))}
@@ -139,17 +162,18 @@ function App() {
             ))}
           </dl>
 
-          <PriceChart {...chartProps} show={show} />
+          {/* key={period}: 기간을 바꾸면 차트를 다시 그리며 등장 모션을 재생 */}
+          <PriceChart key={`p${period}`} {...chartProps} show={show} />
 
           <div className="pane-head"><h2>거래량</h2><span>{won(cur.Volume)}주</span></div>
-          <VolumeChart {...chartProps} />
+          <VolumeChart key={`v${period}`} {...chartProps} />
 
           <div className="pane-head">
             <h2>RSI 14</h2>
             <span>{cur.RSI14 ?? '–'}</span>
             <em>{rsiState(cur.RSI14)}</em>
           </div>
-          <RsiChart {...chartProps} />
+          <RsiChart key={`r${period}`} {...chartProps} />
 
           <div className="pane-head">
             <h2>MACD</h2>
@@ -157,7 +181,7 @@ function App() {
             <span><i className="key sig" />시그널 {won(cur.Signal)}</span>
             <em>{cur.MACD >= cur.Signal ? '시그널선 위' : '시그널선 아래'}</em>
           </div>
-          <MacdChart {...chartProps} />
+          <MacdChart key={`m${period}`} {...chartProps} />
           <DateAxis rows={rows} />
         </section>
 
